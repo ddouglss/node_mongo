@@ -1,9 +1,17 @@
 const express = require('express');
 const UserModel= require('../src/models/user.model');
+
 const app = express()
 
 app.use(express.json());
 
+app.use((req, res, next) =>{
+    console.log(`Resquest Type ${req.method}`);
+    console.log(`Content Type ${req.headers['content-type']}`);
+    console.log(`Date ${new Date()}`);
+    console.log(`URL ${req.url}`);
+    next();
+});
 
 app.get("/users", async (req, res) =>{
     try {
