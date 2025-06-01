@@ -3,10 +3,7 @@ const UserModel= require('../src/models/user.model');
 const app = express()
 
 app.use(express.json());
-app.get("/home", (req, res) => {
-    res.contentType('application/html');
-    res.status(200).send("<h1>Hello World</h1>");
-});
+
 
 app.get("/users", async (req, res) =>{
     try {
@@ -18,6 +15,18 @@ app.get("/users", async (req, res) =>{
     }
 });
 
+app.get("/users/:id", async (req, res) =>{
+    try {
+        const id = req.params.id;
+
+        const user = await UserModel.findById(id);
+
+        return res.status(200).json(user);
+    }catch (err) {
+        res.status(500).send(err.message);
+    }
+})
+
 app.post("/users",  async (req, res) => {
     try{
         const user =  await UserModel.create(req.body)
@@ -25,6 +34,30 @@ app.post("/users",  async (req, res) => {
         res.status(201).json(user);
     } catch(err){
         res.status(500).send(err.message)
+    }
+});
+
+app.patch("/users/:id", async (req, res ) => {
+    try{
+        const id = req.params.id;
+        const user =  await  UserModel.findByIdAndUpdate(id, req.body, {new: true});
+
+        res.status(200).json(user);
+    }
+    catch(err){
+        res.status(500).send(err.message)
+    }
+    });
+
+app.delete("/users/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await  UserModel.findByIdAndDelete(id);
+
+        res.status(200).json(user);
+
+    }catch (err){
+        err.status(500).send(err.message);
     }
 })
 
